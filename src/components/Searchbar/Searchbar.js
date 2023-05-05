@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { ImSearch } from 'react-icons/im';
 import { toast } from 'react-toastify';
 import {
@@ -9,44 +9,40 @@ import {
   Input,
 } from './Searchbar.styled';
 
-export class Header extends Component {
-  state = {
-    data: '',
+export const Header = ({ onSubmit }) => {
+  const [data, setData] = useState('');
+
+  const handleDataChange = event => {
+    setData(event.currentTarget.value.toLowerCase().trim());
   };
 
-  handleDataChange = event => {
-    this.setState({ data: event.currentTarget.value.toLowerCase().trim() });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    if (this.state.data === '') {
+    if (data === '') {
       toast.error('Please enter a value !');
       return;
     }
-    this.props.onSubmit(this.state.data);
-    this.setState({ data: '' });
+    onSubmit(data);
+    setData('');
   };
 
-  render() {
-    return (
-      <Searchbar>
-        <Form onSubmit={this.handleSubmit}>
-          <Button type="submit">
-            <ImSearch />
-            <ButtonLabel>Search</ButtonLabel>
-          </Button>
+  return (
+    <Searchbar>
+      <Form onSubmit={handleSubmit}>
+        <Button type="submit">
+          <ImSearch />
+          <ButtonLabel>Search</ButtonLabel>
+        </Button>
 
-          <Input
-            type="text"
-            value={this.state.data}
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.handleDataChange}
-          />
-        </Form>
-      </Searchbar>
-    );
-  }
-}
+        <Input
+          type="text"
+          value={data}
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={handleDataChange}
+        />
+      </Form>
+    </Searchbar>
+  );
+};
